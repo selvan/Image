@@ -1,5 +1,13 @@
 # Image
 
+## Dependencies
+
+* pip install numpy
+* pip install scipy
+* pip install -U scikit-learn
+* pip install matplotlib
+* pip install pillow / pip install pil
+
 ## Collection of image manipulation programs
 
 ### Size Reduction
