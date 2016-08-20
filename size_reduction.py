@@ -1,4 +1,10 @@
+"""
+    Usage: python size_reduction.py <<path to image file - String>> <<Number of colors for K means cluster - Integer>>
+    Example: python size_reduction.py /tmp/hello.png 32
+"""
+
 print(__doc__)
+
 import numpy as np
 from sklearn.cluster import KMeans
 from sklearn.metrics import pairwise_distances_argmin
@@ -8,11 +14,25 @@ from time import time
 from scipy.misc import imread
 from scipy.misc import imsave
 
+import sys
+import os
+
+command_arguments = sys.argv
+
+picture_file_path = "picture.jpg";
+
 # Number of colors for K means cluster 
 n_colors = 32
 
 # Load photo
-picture = imread("picture.jpg")
+if len(command_arguments) > 1 and command_arguments[1] is not None:
+        picture_file_path = command_arguments[1] 
+
+if len(command_arguments) > 2 and command_arguments[2] is not None:
+        n_colors = int(command_arguments[2]) 
+
+print "Reading Image from path ", picture_file_path, " and number of colors is ", n_colors, "\n\n"
+picture = imread(picture_file_path)
 
 # Convert to floats instead of the default 8 bits integer coding. Dividing by
 # 255 is important so that plt.imshow behaves works well on float data (need to
@@ -56,6 +76,11 @@ def recreate_image(codebook, labels, w, h):
             label_idx += 1
     return image
 
-imsave("/tmp/pictute_1.jpg", picture)
-imsave("/tmp/picture_km.jpg", recreate_image(kmeans.cluster_centers_, labels, w, h))
-imsave("/tmp/picture_random.jpg", recreate_image(codebook_random, labels_random, w, h))
+
+image_file_name_tokens = os.path.splitext(picture_file_path)
+full_path_without_extn = image_file_name_tokens[0]
+extn = image_file_name_tokens[1]
+
+imsave(full_path_without_extn +"_1"+ extn, picture)
+imsave(full_path_without_extn +"_km"+ extn, recreate_image(kmeans.cluster_centers_, labels, w, h))
+imsave(full_path_without_extn +"_random"+ extn, recreate_image(codebook_random, labels_random, w, h))
